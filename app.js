@@ -1,12 +1,17 @@
 const crc = document.getElementById("crc");
 const rate = document.getElementById("rate");
 const usd = document.getElementById("usd");
-const STORAGE_KEY = "gringoCalcExchangeRate";
-const savedRate = localStorage.getItem(STORAGE_KEY);
+const RATE_STORAGE_KEY = "gringoCalcExchangeRate";
+const CRC_STORAGE_KEY = "gringoCalcCRC";
+const USD_STORAGE_KEY = "gringoCalcUSD";
 
-if (savedRate) {
-    rate.value = savedRate;
-}
+const savedRate = localStorage.getItem(RATE_STORAGE_KEY);
+const savedCRC = localStorage.getItem(CRC_STORAGE_KEY);
+const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
+
+if (savedRate) rate.value = savedRate;
+if (savedCRC) crc.value = savedCRC;
+if (savedUSD) usd.value = savedUSD;
 
 document.getElementById("clearBtn")
     .addEventListener("click", () => {
@@ -14,6 +19,12 @@ document.getElementById("clearBtn")
         crc.value = "";
         usd.value = "";
         rate.value = "443";
+
+        localStorage.removeItem(CRC_STORAGE_KEY);
+        localStorage.removeItem(USD_STORAGE_KEY);
+
+        localStorage.setItem(RATE_STORAGE_KEY, "443");
+
     });
 
 function calculate() {
@@ -27,20 +38,36 @@ function calculate() {
     console.log("USD:", usdVal);
 
     if (!isNaN(crcVal) && !isNaN(rateVal) && isNaN(usdVal)) {
-
         const result = crcVal / rateVal;
-
         console.log("CALCULATED USD:", result);
-
         usd.value = result.toFixed(2);
     }
 }
 
-crc.addEventListener("change", calculate);
-rate.addEventListener("change", calculate);
-usd.addEventListener("change", calculate);
+function saveValues() {
+
+    localStorage.setItem(RATE_STORAGE_KEY, rate.value);
+    localStorage.setItem(CRC_STORAGE_KEY, crc.value);
+    localStorage.setItem(USD_STORAGE_KEY, usd.value);
+
+}
+
+crc.addEventListener("change", () => {
+    saveValues();
+    calculate();
+});
+
 rate.addEventListener("change", () => {
-    if (rate.value) {
-        localStorage.setItem(STORAGE_KEY, rate.value);
+    const value = parseFloat(rate.value);
+    if (!isNaN(value) && value > 0) {
+        localStorage.setItem(RATE_STORAGE_KEY, value);
     }
+    saveValues();
+    calculate();
+
+});
+
+usd.addEventListener("change", () => {
+    saveValues();
+    calculate();
 });
