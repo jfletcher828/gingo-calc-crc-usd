@@ -8,14 +8,17 @@ function calculate() {
     const rateVal = parseFloat(rate.value);
     const usdVal = parseFloat(usd.value);
 
+    console.log("CRC:", crcVal);
+    console.log("RATE:", rateVal);
+    console.log("USD:", usdVal);
+
     if (!isNaN(crcVal) && !isNaN(rateVal) && isNaN(usdVal)) {
-        usd.value = (crcVal / rateVal).toFixed(2);
-    }
-    else if (!isNaN(crcVal) && isNaN(rateVal) && !isNaN(usdVal)) {
-        rate.value = (crcVal / usdVal).toFixed(4);
-    }
-    else if (isNaN(crcVal) && !isNaN(rateVal) && !isNaN(usdVal)) {
-        crc.value = (rateVal * usdVal).toFixed(2);
+
+        const result = crcVal / rateVal;
+
+        console.log("CALCULATED USD:", result);
+
+        usd.value = result.toFixed(2);
     }
 }
 
