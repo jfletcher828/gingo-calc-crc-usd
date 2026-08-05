@@ -41,6 +41,7 @@ function calculate() {
         const result = crcVal / rateVal;
         console.log("CALCULATED USD:", result);
         usd.value = result.toFixed(2);
+        saveValues();
     }
 }
 
