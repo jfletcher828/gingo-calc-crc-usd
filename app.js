@@ -22,4 +22,3 @@ function calculate() {
 crc.addEventListener("input", calculate);
 rate.addEventListener("input", calculate);
 usd.addEventListener("input", calculate);
-``
