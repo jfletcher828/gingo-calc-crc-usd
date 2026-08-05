@@ -22,6 +22,6 @@ function calculate() {
     }
 }
 
-crc.addEventListener("input", calculate);
-rate.addEventListener("input", calculate);
-usd.addEventListener("input", calculate);
+crc.addEventListener("change", calculate);
+rate.addEventListener("change", calculate);
+usd.addEventListener("change", calculate);
