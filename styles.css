@@ -1,21 +1,43 @@
 body {
-    font-family: Arial, sans-serif;
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 20px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fb;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding-top: 50px;
+}
+
+.container {
+    background: white;
+    width: 400px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
 }
 
 h1 {
     text-align: center;
+    color: #1f3b5b;
+    margin-bottom: 25px;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
 }
 
 input {
-    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
     font-size: 16px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #0d6efd;
 }
