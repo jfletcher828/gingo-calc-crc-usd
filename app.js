@@ -43,6 +43,9 @@ function calculate() {
         usd.value = result.toFixed(2);
         saveValues();
     }
+    else if (!isNaN(crcVal) && isNaN(rateVal) && !isNaN(usdVal)) {
+        rate.value = (crcVal / usdVal).toFixed(4);
+    }
 }
 
 function saveValues() {
