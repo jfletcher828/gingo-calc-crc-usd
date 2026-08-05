@@ -1,6 +1,12 @@
 const crc = document.getElementById("crc");
 const rate = document.getElementById("rate");
 const usd = document.getElementById("usd");
+const STORAGE_KEY = "gringoCalcExchangeRate";
+const savedRate = localStorage.getItem(STORAGE_KEY);
+
+if (savedRate) {
+    rate.value = savedRate;
+}
 
 document.getElementById("clearBtn")
     .addEventListener("click", () => {
@@ -33,3 +39,8 @@ function calculate() {
 crc.addEventListener("change", calculate);
 rate.addEventListener("change", calculate);
 usd.addEventListener("change", calculate);
+rate.addEventListener("change", () => {
+    if (rate.value) {
+        localStorage.setItem(STORAGE_KEY, rate.value);
+    }
+});
