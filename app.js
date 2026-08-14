@@ -30,8 +30,9 @@ document.getElementById("clearBtn")
 
     });
 
-function calculate() {
-
+function calculate(changedField) {
+    console.log("Changed field:", changedField);
+    
     const crcVal = parseFloat(crc.value);
     const rateVal = parseFloat(rate.value);
     const usdVal = parseFloat(usd.value);
