@@ -11,7 +11,8 @@ const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
 const DEBOUNCE_DELAY = 1500; // 1.5 seconds
 
 let calculationTimer = null;
-let lastEditedField = null;
+let lastEditedField = "crc";
+let isCalculating = false;
 
 if (savedRate) rate.value = savedRate;
 if (savedCRC) crc.value = savedCRC;
@@ -19,87 +20,112 @@ if (savedUSD) usd.value = savedUSD;
 
 document.getElementById("clearBtn")
     .addEventListener("click", () => {
-
+        clearTimeout(calculationTimer);
+        calculationTimer = null;
         crc.value = "";
         usd.value = "";
         rate.value = "443";
-
+        lastEditedField = "crc";
         localStorage.removeItem(CRC_STORAGE_KEY);
         localStorage.removeItem(USD_STORAGE_KEY);
-
         localStorage.setItem(RATE_STORAGE_KEY, "443");
-
     });
 
 function calculate(changedField) {
-    const crcVal = parseFloat(crc.value);
-    const rateVal = parseFloat(rate.value);
-    const usdVal = parseFloat(usd.value);
+    if (isCalculating) {
+        return;
+    }
 
-    console.log("Changed field:", changedField);
-    console.log("CRC:", crcVal);
-    console.log("RATE:", rateVal);
-    console.log("USD:", usdVal);
+    isCalculating = true;
 
-    switch (changedField) {
+    try {
+        const crcVal = parseFloat(crc.value);
+        const rateVal = parseFloat(rate.value);
+        const usdVal = parseFloat(usd.value);
 
-        case "crc":
-            if (!isNaN(crcVal) && !isNaN(rateVal)) {
-                const result = crcVal / rateVal;
+        const validCRC =
+            Number.isFinite(crcVal) && crcVal > 0;
 
-                console.log("CALCULATED USD:", result);
+        const validRate =
+            Number.isFinite(rateVal) && rateVal > 0;
 
-                if (isFinite(result)) {
-                    usd.value = result.toFixed(2);
-                    saveValues();
+        const validUSD =
+            Number.isFinite(usdVal) && usdVal > 0;
+
+        console.log("Changed field:", changedField);
+        console.log("Authoritative field:", lastEditedField);
+        console.log("CRC:", crcVal);
+        console.log("RATE:", rateVal);
+        console.log("USD:", usdVal);
+
+        switch (changedField) {
+            case "crc":
+                if (validCRC && validRate) {
+                    const result = crcVal / rateVal;
+
+                    if (Number.isFinite(result) && result > 0) {
+                        usd.value = result.toFixed(2);
+                        console.log("CALCULATED USD:", result);
+                    }
                 }
-            }
-            break;
+                break;
 
-        case "rate":
-            if (!isNaN(crcVal) && !isNaN(rateVal)) {
-                const result = crcVal / rateVal;
+            case "usd":
+                if (validUSD && validRate) {
+                    const result = usdVal * rateVal;
 
-                console.log("CALCULATED USD:", result);
-
-                if (isFinite(result)) {
-                    usd.value = result.toFixed(2);
-                    saveValues();
+                    if (Number.isFinite(result) && result > 0) {
+                        crc.value = result.toFixed(2);
+                        console.log("CALCULATED CRC:", result);
+                    }
                 }
-            }
-            break;
+                break;
 
-        case "usd":
-        
-            // If Rate exists, calculate CRC
-            if (!isNaN(rateVal) && !isNaN(usdVal) && rateVal > 0) {
-        
-                const result = usdVal * rateVal;
-        
-                console.log("CALCULATED CRC:", result);
-        
-                if (isFinite(result)) {
-                    crc.value = result.toFixed(2);
-                    saveValues();
-                }
-            }
-        
-            // Otherwise calculate Rate if CRC exists
-            else if (!isNaN(crcVal) && !isNaN(usdVal) && usdVal > 0) {
-        
-                const result = crcVal / usdVal;
-        
-                console.log("CALCULATED RATE:", result);
-        
-                if (isFinite(result)) {
-                    rate.value = result.toFixed(4);
-                    saveValues();
-                }
-            }        
-            break;
+            case "rate":
+                /*
+                 * If Rate is blank or invalid, derive it from
+                 * CRC and USD when both are valid.
+                 */
+                if (!validRate) {
+                    if (validCRC && validUSD) {
+                        const result = crcVal / usdVal;
 
-        default:
-            console.warn("Unknown field:", changedField);
+                        if (Number.isFinite(result) && result > 0) {
+                            rate.value = result.toFixed(4);
+                            console.log("CALCULATED RATE:", result);
+                        }
+                    }
+
+                    break;
+                }
+
+                /*
+                 * A valid Rate edit preserves whichever monetary
+                 * field was edited most recently.
+                 */
+                if (lastEditedField === "usd" && validUSD) {
+                    const result = usdVal * rateVal;
+
+                    if (Number.isFinite(result) && result > 0) {
+                        crc.value = result.toFixed(2);
+                        console.log("CALCULATED CRC:", result);
+                    }
+                } else if (validCRC) {
+                    const result = crcVal / rateVal;
+
+                    if (Number.isFinite(result) && result > 0) {
+                        usd.value = result.toFixed(2);
+                        console.log("CALCULATED USD:", result);
+                    }
+                }
+                break;
+
+            default:
+                console.warn("Unknown field:", changedField);
+        }
+    } finally {
+        isCalculating = false;
+        saveValues();
     }
 }
 
@@ -129,29 +155,37 @@ crc.addEventListener("input", () => {
 
 crc.addEventListener("blur", () => {
     clearTimeout(calculationTimer);
+    calculationTimer = null;
+    lastEditedField = "crc";
     calculate("crc");
 });
 
 // Exchange Rate
 rate.addEventListener("input", () => {
-    lastEditedField = "rate";
+    /*
+     * Do not change lastEditedField here.
+     * The most recently edited monetary field remains authoritative.
+     */
     saveValues();
     scheduleCalculation("rate");
 });
 
 rate.addEventListener("blur", () => {
     clearTimeout(calculationTimer);
+    calculationTimer = null;
     calculate("rate");
 });
 
 // USD
 usd.addEventListener("input", () => {
-    lastEditedField = "usd";
+    lastEd*tedField = "usd";
     saveValues();
     scheduleCalculation("usd");
-});
+}*;
 
 usd.addEventListener("blur", () => {
     clearTimeout(calculationTimer);
+    calculationTimer = null;
+    lastEditedField = "usd";
     calculate("usd");
 });
