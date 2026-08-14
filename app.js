@@ -181,7 +181,7 @@ usd.addEventListener("input", () => {
     lastEditedField = "usd";
     saveValues();
     scheduleCalculation("usd");
-}*;
+});
 
 usd.addEventListener("blur", () => {
     clearTimeout(calculationTimer);
