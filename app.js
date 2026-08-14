@@ -67,18 +67,36 @@ function scheduleCalculation(fieldName) {
     }, DEBOUNCE_DELAY);
 }
 
-crc.addEventListener("change", () => {
+/// event handlers
+// CRC
+crc.addEventListener("input", () => {
+    saveValues();
     scheduleCalculation("crc");
 });
 
-rate.addEventListener("change", () => {
-    const value = parseFloat(rate.value);
-    if (!isNaN(value) && value > 0) {
-        localStorage.setItem(RATE_STORAGE_KEY, value);
-    }
+crc.addEventListener("blur", () => {
+    clearTimeout(calculationTimer);
+    calculate("crc");
+});
+
+// Exchange Rate
+rate.addEventListener("input", () => {
+    saveValues();
     scheduleCalculation("rate");
 });
 
-usd.addEventListener("change", () => {
+rate.addEventListener("blur", () => {
+    clearTimeout(calculationTimer);
+    calculate("rate");
+});
+
+// USD
+usd.addEventListener("input", () => {
+    saveValues();
     scheduleCalculation("usd");
+});
+
+usd.addEventListener("blur", () => {
+    clearTimeout(calculationTimer);
+    calculate("usd");
 });
