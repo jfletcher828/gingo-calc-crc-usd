@@ -31,24 +31,58 @@ document.getElementById("clearBtn")
     });
 
 function calculate(changedField) {
-    console.log("Changed field:", changedField);
-    
     const crcVal = parseFloat(crc.value);
     const rateVal = parseFloat(rate.value);
     const usdVal = parseFloat(usd.value);
 
+    console.log("Changed field:", changedField);
     console.log("CRC:", crcVal);
     console.log("RATE:", rateVal);
     console.log("USD:", usdVal);
 
-    if (!isNaN(crcVal) && !isNaN(rateVal) && isNaN(usdVal)) {
-        const result = crcVal / rateVal;
-        console.log("CALCULATED USD:", result);
-        usd.value = result.toFixed(2);
-        saveValues();
-    }
-    else if (!isNaN(crcVal) && isNaN(rateVal) && !isNaN(usdVal)) {
-        rate.value = (crcVal / usdVal).toFixed(4);
+    switch (changedField) {
+
+        case "crc":
+            if (!isNaN(crcVal) && !isNaN(rateVal)) {
+                const result = crcVal / rateVal;
+
+                console.log("CALCULATED USD:", result);
+
+                if (isFinite(result)) {
+                    usd.value = result.toFixed(2);
+                    saveValues();
+                }
+            }
+            break;
+
+        case "rate":
+            if (!isNaN(crcVal) && !isNaN(rateVal)) {
+                const result = crcVal / rateVal;
+
+                console.log("CALCULATED USD:", result);
+
+                if (isFinite(result)) {
+                    usd.value = result.toFixed(2);
+                    saveValues();
+                }
+            }
+            break;
+
+        case "usd":
+            if (!isNaN(crcVal) && !isNaN(usdVal) && usdVal > 0) {
+                const result = crcVal / usdVal;
+
+                console.log("CALCULATED RATE:", result);
+
+                if (isFinite(result)) {
+                    rate.value = result.toFixed(4);
+                    saveValues();
+                }
+            }
+            break;
+
+        default:
+            console.warn("Unknown field:", changedField);
     }
 }
 
