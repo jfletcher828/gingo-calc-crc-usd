@@ -11,6 +11,7 @@ const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
 const DEBOUNCE_DELAY = 1500; // 1.5 seconds
 
 let calculationTimer = null;
+let lastEditedField = null;
 
 if (savedRate) rate.value = savedRate;
 if (savedCRC) crc.value = savedCRC;
@@ -69,16 +70,32 @@ function calculate(changedField) {
             break;
 
         case "usd":
-            if (!isNaN(crcVal) && !isNaN(usdVal) && usdVal > 0) {
+        
+            // If Rate exists, calculate CRC
+            if (!isNaN(rateVal) && !isNaN(usdVal) && rateVal > 0) {
+        
+                const result = usdVal * rateVal;
+        
+                console.log("CALCULATED CRC:", result);
+        
+                if (isFinite(result)) {
+                    crc.value = result.toFixed(2);
+                    saveValues();
+                }
+            }
+        
+            // Otherwise calculate Rate if CRC exists
+            else if (!isNaN(crcVal) && !isNaN(usdVal) && usdVal > 0) {
+        
                 const result = crcVal / usdVal;
-
+        
                 console.log("CALCULATED RATE:", result);
-
+        
                 if (isFinite(result)) {
                     rate.value = result.toFixed(4);
                     saveValues();
                 }
-            }
+            }        
             break;
 
         default:
@@ -105,6 +122,7 @@ function scheduleCalculation(fieldName) {
 /// event handlers
 // CRC
 crc.addEventListener("input", () => {
+    lastEditedField = "crc";
     saveValues();
     scheduleCalculation("crc");
 });
@@ -116,6 +134,7 @@ crc.addEventListener("blur", () => {
 
 // Exchange Rate
 rate.addEventListener("input", () => {
+    lastEditedField = "rate";
     saveValues();
     scheduleCalculation("rate");
 });
@@ -127,6 +146,7 @@ rate.addEventListener("blur", () => {
 
 // USD
 usd.addEventListener("input", () => {
+    lastEditedField = "usd";
     saveValues();
     scheduleCalculation("usd");
 });
