@@ -178,7 +178,7 @@ rate.addEventListener("blur", () => {
 
 // USD
 usd.addEventListener("input", () => {
-    lastEd*tedField = "usd";
+    lastEditedField = "usd";
     saveValues();
     scheduleCalculation("usd");
 }*;
