@@ -8,6 +8,9 @@ const USD_STORAGE_KEY = "gringoCalcUSD";
 const savedRate = localStorage.getItem(RATE_STORAGE_KEY);
 const savedCRC = localStorage.getItem(CRC_STORAGE_KEY);
 const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
+const DEBOUNCE_DELAY = 1500; // 1.5 seconds
+
+let calculationTimer = null;
 
 if (savedRate) rate.value = savedRate;
 if (savedCRC) crc.value = savedCRC;
@@ -56,9 +59,16 @@ function saveValues() {
 
 }
 
+function scheduleCalculation(fieldName) {
+    clearTimeout(calculationTimer);
+
+    calculationTimer = setTimeout(() => {
+        calculate(fieldName);
+    }, DEBOUNCE_DELAY);
+}
+
 crc.addEventListener("change", () => {
-    saveValues();
-    calculate();
+    scheduleCalculation("crc");
 });
 
 rate.addEventListener("change", () => {
@@ -66,12 +76,9 @@ rate.addEventListener("change", () => {
     if (!isNaN(value) && value > 0) {
         localStorage.setItem(RATE_STORAGE_KEY, value);
     }
-    saveValues();
-    calculate();
-
+    scheduleCalculation("rate");
 });
 
 usd.addEventListener("change", () => {
-    saveValues();
-    calculate();
+    scheduleCalculation("usd");
 });
