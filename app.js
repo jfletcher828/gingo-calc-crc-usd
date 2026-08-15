@@ -22,9 +22,9 @@ let calculationTimer = null;
 let lastEditedField = "crc";
 let isCalculating = false;
 
-if (savedRate) rate.value = savedRate;
-if (savedCRC) crc.value = savedCRC;
-if (savedUSD) usd.value = savedUSD;
+if (savedRate !== null) rate.value = savedRate;
+if (savedCRC !== null) crc.value = savedCRC;
+if (savedUSD !== null) usd.value = savedUSD;
 
 document.getElementById("clearBtn")
     .addEventListener("click", () => {
