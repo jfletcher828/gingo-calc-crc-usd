@@ -142,7 +142,7 @@ function formatCRC(value) {
         return "";
     }
 
-    return value.toLocaleString("es-CR", {
+    return value.toLocaleString("de-DE", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 2
     });
