@@ -149,16 +149,27 @@ function formatCRC(value) {
 }
 
 function parseCRC(text) {
-    if (!text || text.trim() === "") {
+    console.log("parseCRC input:", text);
+    console.log("parseCRC type:", typeof text);
+
+    if (!text) {
+        console.log("parseCRC: empty input");
         return NaN;
     }
 
-    return parseFloat(
-        text
-            .replace(/\./g, "")
-            .replace(",", ".")
-    );
+    const cleaned = String(text)
+        .replace(/\./g, "")
+        .replace(",", ".");
+
+    console.log("parseCRC cleaned:", cleaned);
+
+    const result = Number(cleaned);
+
+    console.log("parseCRC result:", result);
+
+    return result;
 }
+
 
 function saveValues() {
     localStorage.setItem(LAST_EDITED_STORAGE_KEY, lastEditedField);
