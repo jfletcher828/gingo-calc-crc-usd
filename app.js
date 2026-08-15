@@ -9,6 +9,14 @@ const savedRate = localStorage.getItem(RATE_STORAGE_KEY);
 const savedCRC = localStorage.getItem(CRC_STORAGE_KEY);
 const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
 const DEBOUNCE_DELAY = 1500; // 1.5 seconds
+const LAST_EDITED_STORAGE_KEY = "gringoCalcLastEditedField";
+
+const savedLastEdited =
+    localStorage.getItem(LAST_EDITED_STORAGE_KEY);
+
+if (savedLastEdited) {
+    lastEditedField = savedLastEdited;
+}
 
 let calculationTimer = null;
 let lastEditedField = "crc";
@@ -130,11 +138,10 @@ function calculate(changedField) {
 }
 
 function saveValues() {
-
+    localStorage.setItem(LAST_EDITED_STORAGE_KEY, lastEditedField);
     localStorage.setItem(RATE_STORAGE_KEY, rate.value);
     localStorage.setItem(CRC_STORAGE_KEY, crc.value);
     localStorage.setItem(USD_STORAGE_KEY, usd.value);
-
 }
 
 function scheduleCalculation(fieldName) {
