@@ -155,8 +155,8 @@ function parseCRC(text) {
 
     return parseFloat(
         text
-            .replace(/\./g, "")  // remove thousands separators
-            .replace(",", ".")   // convert decimal separator
+            .replace(/\./g, "")
+            .replace(",", ".")
     );
 }
 
