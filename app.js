@@ -186,10 +186,17 @@ crc.addEventListener("input", () => {
 crc.addEventListener("blur", () => {
     clearTimeout(calculationTimer);
     calculationTimer = null;
+
+    console.log("CRC raw:", crc.value);
+
     const value = parseCRC(crc.value);
+
+    console.log("CRC parsed:", value);
+
     if (Number.isFinite(value) && value > 0) {
         crc.value = formatCRC(value);
     }
+
     lastEditedField = "crc";
     calculate("crc");
 });
