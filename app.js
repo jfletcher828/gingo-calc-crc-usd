@@ -22,7 +22,7 @@ let calculationTimer = null;
 let lastEditedField = "crc";
 let isCalculating = false;
 
-if (savedRate !== null) rate.value = savedRate;
+if (savedRate !== null) rate.value = formatCRC(savedRate);
 if (savedCRC !== null) crc.value = savedCRC;
 if (savedUSD !== null) usd.value = savedUSD;
 
@@ -47,7 +47,7 @@ function calculate(changedField) {
     isCalculating = true;
 
     try {
-        const crcVal = parseFloat(crc.value);
+        const crcVal = parseCRC(crc.value);
         const rateVal = parseFloat(rate.value);
         const usdVal = parseFloat(usd.value);
 
@@ -83,7 +83,7 @@ function calculate(changedField) {
                     const result = usdVal * rateVal;
 
                     if (Number.isFinite(result) && result > 0) {
-                        crc.value = result.toFixed(2);
+                        crc.value = formatCRC(result);
                         console.log("CALCULATED CRC:", result);
                     }
                 }
@@ -115,7 +115,7 @@ function calculate(changedField) {
                     const result = usdVal * rateVal;
 
                     if (Number.isFinite(result) && result > 0) {
-                        crc.value = result.toFixed(2);
+                        crc.value = formatCRC(result);
                         console.log("CALCULATED CRC:", result);
                     }
                 } else if (validCRC) {
@@ -135,6 +135,29 @@ function calculate(changedField) {
         isCalculating = false;
         saveValues();
     }
+}
+
+function formatCRC(value) {
+    if (!Number.isFinite(value)) {
+        return "";
+    }
+
+    return value.toLocaleString("es-CR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    });
+}
+
+function parseCRC(text) {
+    if (!text || text.trim() === "") {
+        return NaN;
+    }
+
+    return parseFloat(
+        text
+            .replace(/\./g, "")  // remove thousands separators
+            .replace(",", ".")   // convert decimal separator
+    );
 }
 
 function saveValues() {
