@@ -11,6 +11,10 @@ const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
 const DEBOUNCE_DELAY = 1500; // 1.5 seconds
 const LAST_EDITED_STORAGE_KEY = "gringoCalcLastEditedField";
 
+let calculationTimer = null;
+let lastEditedField = "crc";
+let isCalculating = false;
+
 const savedLastEdited =
     localStorage.getItem(LAST_EDITED_STORAGE_KEY);
 
@@ -18,11 +22,7 @@ if (savedLastEdited) {
     lastEditedField = savedLastEdited;
 }
 
-let calculationTimer = null;
-let lastEditedField = "crc";
-let isCalculating = false;
-
-if (savedRate !== null) rate.value = formatCRC(savedRate);
+if (savedRate !== null) rate.value = savedRate;
 if (savedCRC !== null) crc.value = savedCRC;
 if (savedUSD !== null) usd.value = savedUSD;
 
@@ -186,6 +186,10 @@ crc.addEventListener("input", () => {
 crc.addEventListener("blur", () => {
     clearTimeout(calculationTimer);
     calculationTimer = null;
+    const value = parseCRC(crc.value);
+    if (Number.isFinite(value) && value > 0) {
+        crc.value = formatCRC(value);
+    }
     lastEditedField = "crc";
     calculate("crc");
 });
