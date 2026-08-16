@@ -254,8 +254,10 @@ function updateNumberWordsDisplay() {
         return;
     }
 
+    const text = numberToWords(value) + suffix;
+    
     numberWords.textContent =
-        numberToWords(value) + suffix;
+        text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 function saveValues() {
