@@ -12,6 +12,19 @@ const DEBOUNCE_DELAY = 1500; // 1.5 seconds
 const LAST_EDITED_STORAGE_KEY = "gringoCalcLastEditedField";
 const numberWords = document.getElementById("numberWords");
 
+const ONES = [
+    "", "one", "two", "three", "four", "five",
+    "six", "seven", "eight", "nine", "ten",
+    "eleven", "twelve", "thirteen", "fourteen",
+    "fifteen", "sixteen", "seventeen",
+    "eighteen", "nineteen"
+];
+
+const TENS = [
+    "", "", "twenty", "thirty", "forty",
+    "fifty", "sixty", "seventy", "eighty", "ninety"
+];
+
 let focusedField = "crc";
 let calculationTimer = null;
 let lastEditedField = "crc";
@@ -172,6 +185,76 @@ function parseCRC(text) {
     return result;
 }
 
+function numberToWords(num) {
+    num = Math.floor(num);
+
+    if (num === 0) {
+        return "zero";
+    }
+
+    function convert(n) {
+        if (n < 20) {
+            return ONES[n];
+        }
+
+        if (n < 100) {
+            return TENS[Math.floor(n / 10)] +
+                (n % 10 ? " " + ONES[n % 10] : "");
+        }
+
+        if (n < 1000) {
+            return ONES[Math.floor(n / 100)] +
+                " hundred" +
+                (n % 100 ? " " + convert(n % 100) : "");
+        }
+
+        if (n < 1000000) {
+            return convert(Math.floor(n / 1000)) +
+                " thousand" +
+                (n % 1000 ? " " + convert(n % 1000) : "");
+        }
+
+        return convert(Math.floor(n / 1000000)) +
+            " million" +
+            (n % 1000000 ? " " + convert(n % 1000000) : "");
+    }
+
+    return convert(num);
+}
+
+function updateNumberWordsDisplay() {
+    let value;
+    let suffix;
+
+    switch (focusedField) {
+        case "crc":
+            value = parseCRC(crc.value);
+            suffix = " colones";
+            break;
+
+        case "usd":
+            value = parseFloat(usd.value);
+            suffix = " dollars";
+            break;
+
+        case "rate":
+            value = parseFloat(rate.value);
+            suffix = " colones per dollar";
+            break;
+
+        default:
+            numberWords.textContent = "";
+            return;
+    }
+
+    if (!Number.isFinite(value) || value <= 0) {
+        numberWords.textContent = "";
+        return;
+    }
+
+    numberWords.textContent =
+        numberToWords(value) + suffix;
+}
 
 function saveValues() {
     localStorage.setItem(LAST_EDITED_STORAGE_KEY, lastEditedField);
