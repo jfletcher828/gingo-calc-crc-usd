@@ -10,7 +10,9 @@ const savedCRC = localStorage.getItem(CRC_STORAGE_KEY);
 const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
 const DEBOUNCE_DELAY = 1500; // 1.5 seconds
 const LAST_EDITED_STORAGE_KEY = "gringoCalcLastEditedField";
+const numberWords = document.getElementById("numberWords");
 
+let focusedField = "crc";
 let calculationTimer = null;
 let lastEditedField = "crc";
 let isCalculating = false;
@@ -188,6 +190,9 @@ function scheduleCalculation(fieldName) {
 
 /// event handlers
 // CRC
+crc.addEventListener("focus", () => {
+    focusedField = "crc";
+});
 crc.addEventListener("input", () => {
     lastEditedField = "crc";
     saveValues();
@@ -213,6 +218,10 @@ crc.addEventListener("blur", () => {
 });
 
 // Exchange Rate
+rate.addEventListener("focus", () => {
+    focusedField = "rate";
+});
+
 rate.addEventListener("input", () => {
     /*
      * Do not change lastEditedField here.
@@ -229,6 +238,10 @@ rate.addEventListener("blur", () => {
 });
 
 // USD
+usd.addEventListener("focus", () => {
+    focusedField = "usd";
+});
+
 usd.addEventListener("input", () => {
     lastEditedField = "usd";
     saveValues();
