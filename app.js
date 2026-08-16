@@ -275,6 +275,7 @@ function scheduleCalculation(fieldName) {
 // CRC
 crc.addEventListener("focus", () => {
     focusedField = "crc";
+    updateNumberWordsDisplay();
 });
 crc.addEventListener("input", () => {
     lastEditedField = "crc";
@@ -303,6 +304,7 @@ crc.addEventListener("blur", () => {
 // Exchange Rate
 rate.addEventListener("focus", () => {
     focusedField = "rate";
+    updateNumberWordsDisplay();
 });
 
 rate.addEventListener("input", () => {
@@ -323,6 +325,7 @@ rate.addEventListener("blur", () => {
 // USD
 usd.addEventListener("focus", () => {
     focusedField = "usd";
+    updateNumberWordsDisplay();
 });
 
 usd.addEventListener("input", () => {
