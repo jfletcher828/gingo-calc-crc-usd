@@ -280,6 +280,7 @@ crc.addEventListener("focus", () => {
 crc.addEventListener("input", () => {
     lastEditedField = "crc";
     saveValues();
+    updateNumberWordsDisplay();
     scheduleCalculation("crc");
 });
 
@@ -313,6 +314,7 @@ rate.addEventListener("input", () => {
      * The most recently edited monetary field remains authoritative.
      */
     saveValues();
+    updateNumberWordsDisplay();
     scheduleCalculation("rate");
 });
 
@@ -331,6 +333,7 @@ usd.addEventListener("focus", () => {
 usd.addEventListener("input", () => {
     lastEditedField = "usd";
     saveValues();
+    updateNumberWordsDisplay();
     scheduleCalculation("usd");
 });
 
