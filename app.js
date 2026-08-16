@@ -48,6 +48,7 @@ document.getElementById("clearBtn")
         crc.value = "";
         usd.value = "";
         rate.value = "443";
+        numberWords.textContent = "";
         lastEditedField = "crc";
         localStorage.removeItem(CRC_STORAGE_KEY);
         localStorage.removeItem(USD_STORAGE_KEY);
@@ -149,6 +150,7 @@ function calculate(changedField) {
     } finally {
         isCalculating = false;
         saveValues();
+        updateNumberWordsDisplay();
     }
 }
 
