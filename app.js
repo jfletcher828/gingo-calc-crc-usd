@@ -280,6 +280,7 @@ function scheduleCalculation(fieldName) {
 crc.addEventListener("focus", () => {
     focusedField = "crc";
     updateNumberWordsDisplay();
+
 });
 crc.addEventListener("input", () => {
     lastEditedField = "crc";
@@ -309,6 +310,7 @@ crc.addEventListener("blur", () => {
 // Exchange Rate
 rate.addEventListener("focus", () => {
     focusedField = "rate";
+
     updateNumberWordsDisplay();
 });
 
