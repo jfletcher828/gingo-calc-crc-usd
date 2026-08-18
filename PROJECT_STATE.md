@@ -1,385 +1,70 @@
-Save the following as:
+# Gringo Calc Project State
 
-PROJECT_STATE.md
+## Current Version
+v1.0
 
-# Gringo Calc - v0.9
+## Current Branch
+feature/decimal-wording
 
-## Project Status
+## Latest Stable Tag
+v1.0
 
-Current version:
+## Repository Status
+Feature branch synchronized with remote.
+v1.0 tag created and points to latest commit.
 
-```text
-v0.9
+Commit:
+e85ed9b - Add focus-aware number to words display
 
+---
 
-Git tag created:
+## Project Overview
 
-git tag -a v0.9 -m "Gringo Calc v0.9"
-git push origin v0.9
+Gringo Calc is a single-page web application for converting between:
 
+- Costa Rican Colones (CRC)
+- US Dollars (USD)
+- Exchange Rate (CRC per USD)
 
-Working branch:
+Current architecture uses:
 
-main
+- HTML
+- CSS
+- Vanilla JavaScript
+- localStorage persistence
+- Debounced calculations
+- Focus-aware UI behavior
 
+---
 
-Planned feature branch:
+## Completed Features
 
-git checkout -b feature/number-to-words
-git push -u origin feature/number-to-words
+### v0.9
 
-Application Overview
+- Three-way calculator functionality
+- CRC ↔ USD ↔ Exchange Rate calculations
+- Debounced input handling
+- Authoritative field logic using lastEditedField
+- localStorage persistence
+- Costa Rican CRC formatting support
+- Exchange Rate persistence
+- Improved Clear button behavior
+- Stable tagged release (v0.9)
 
-Gringo Calc is a CRC/USD currency calculator.
+### v1.0
 
-Fields:
-
-CRC
-Exchange Rate
-USD
-
-
-Current supported calculations:
-
-CRC + Rate -> USD
-USD + Rate -> CRC
-CRC + USD -> Rate
-
-
-All three fields may be derived from the other two.
-
-Completed Features
-Calculator Engine
-
-Implemented:
-
-Three-way calculation logic
-
-
-Behavior:
-
-CRC edited -> USD recalculated
-USD edited -> CRC recalculated
-Rate edited -> recalculates non-authoritative monetary field
-
-
-Uses:
-
-lastEditedField
-
-
-to determine authority.
-
-Debounced Input
-
-Implemented:
-
-input events
-
-
-plus:
-
-setTimeout()
-
-
-debouncing.
-
-Current delay:
-
-1500ms
-
-
-Behavior:
-
-Typing pauses -> calculate
-Blur -> calculate immediately
-
-Recursive Protection
-
-Implemented:
-
-isCalculating
-
-
-guard.
-
-Prevents:
-
-Recursive calculations
-Double execution
-Event loops
-
-Persistence
-
-Implemented via localStorage.
-
-Persisted:
-
-CRC
-USD
-Exchange Rate
-lastEditedField
-
-
-Keys:
-
-gringoCalcCRC
-gringoCalcUSD
-gringoCalcExchangeRate
-gringoCalcLastEditedField
-
-Clear Button
-
-Behavior:
-
-CRC = blank
-USD = blank
-Rate = 443
-lastEditedField = crc
-
-
-Preserved by design.
-
-CRC Formatting
-
-Current implementation:
-
-formatCRC()
-parseCRC()
-
-
-Goal:
-
-Costa Rican formatting
-
-
-Examples:
-
-1.000.000
-1.500.000
-1.500.000,50
-
-
-Important discovery:
-
-CRC field cannot be:
-
-<input type="number">
-
-
-because:
-
-1.500.000
-
-
-is not valid for numeric inputs.
-
-CRC field was changed to:
-
-<input type="text" inputmode="decimal">
-
-
-This fixed the issue where CRC became blank after formatting.
-
-Current Known Good Behavior
-
-Verified via testing.
-
-CRC → USD
-
-Example:
-
-CRC  = 1500000
-Rate = 443
-
-USD = 3386.00
-
-
-Working.
-
-USD → CRC
-
-Example:
-
-USD  = 100
-Rate = 443
-
-CRC = 44.300
-
-
-Working.
-
-Rate Calculation
-
-Example:
-
-CRC = 1500000
-USD = 3386
-
-
-Rate derives correctly.
-
-Working.
-
-Important Lessons Learned
-parseCRC Was Not Broken
-
-Debugging confirmed:
-
-parseCRC("1500000")
-
-
-returns:
-
-1500000
-
-
-correctly.
-
-Problem was:
-
-<input type="number">
-
-
-not parseCRC.
-
-Authoritative Logic Works
-
-Current design:
-
-lastEditedField
-
-
-tracks:
-
-crc
-usd
-
-
-Exchange Rate does not become authoritative.
-
-This behavior should be preserved.
-
-Next Feature
-Number To Words
-
-Development branch:
-
-feature/number-to-words
-
-Feature Goal
-
-Display the written form of the field that currently has focus.
-
-Example:
-
-USD = 100
-
-
-Display:
-
-One hundred dollars
-
-
-Example:
-
-CRC = 1.500.000
-
-
-Display:
-
-One million five hundred thousand colones
-
-UX Proposal
-
-Add below calculator:
-
-<div id="numberWords"></div>
-
-
-Example display:
-
-One hundred dollars
-
-
-or
-
-Four hundred forty-three colones per dollar
-
-
-or
-
-One million five hundred thousand colones
-
-Phase 1 Scope
-
-Implement:
-
-English output only
-Whole numbers only
-
-
-Supported:
-
-CRC
-USD
-Exchange Rate
-
-
-No cents.
-
-No decimals.
-
-Field Behavior
-
-When focus enters:
-
-CRC
-
-
-show CRC words.
-
-When focus enters:
-
-USD
-
-
-show USD words.
-
-When focus enters:
-
-Exchange Rate
-
-
-show Exchange Rate words.
-
-Technical Design
-
-Planned functions:
-
-updateNumberWords(fieldName)
-
-
-and
-
-numberToWords(value)
-
-
-Event hooks:
-
-focus
-input
-blur
-
-Suggested Next Chat Prompt
-Continue the Gringo Calc project from PROJECT_STATE.md v0.9.
-
-We are now working on branch:
-
-feature/number-to-words
-
-Goal:
-Display the written form of the value in the currently focused field beneath the calculator.
+- Focus-aware number-to-words display
+- English wording support
+- USD wording
+- CRC wording
+- Exchange Rate wording
+- Support for thousands and millions
+- Automatic update on:
+  - focus
+  - input
+  - calculation
+  - clear
+- Capitalized output text
 
 Examples:
 
@@ -392,32 +77,138 @@ Examples:
 1.500.000 CRC
 → One million five hundred thousand colones
 
-Scope:
-- English only
-- Whole numbers only
-- Focus-aware display
-- Preserve existing calculator functionality
-- Review current app.js, index.html, and styles.css before proposing changes
+---
 
-Provide no more than three implementation steps at a time.
+## Current Number-To-Words Architecture
 
-Release Summary
-Version 0.9 Highlights
-Three-way calculator functionality
-CRC ↔ USD ↔ Exchange Rate calculations
-Debounced input handling
-Authoritative field logic using lastEditedField
-localStorage persistence
-Costa Rican CRC formatting support
-Exchange Rate persistence
-Improved Clear button behavior
-Stable tagged release (v0.9)
-Known Future Enhancements
-Number-to-words display
-Decimal/cents wording support
-English/Spanish localization
-Additional CRC formatting refinements
-Calculation history
-Share/export functionality
+### Constants
 
-This file should be a complete handoff point for starting the **feature/number-to-words** branch in a fresh chat.
+ONES[]
+TENS[]
+
+### Functions
+
+numberToWords(num)
+
+Converts:
+
+- 0
+- 1-19
+- 20-99
+- 100-999
+- thousands
+- millions
+
+updateNumberWordsDisplay()
+
+Uses:
+
+focusedField
+
+to determine which value should be displayed.
+
+Current display is whole-number only.
+
+Example:
+
+50.23 USD
+→ Fifty dollars
+
+(decimal portion intentionally ignored)
+
+---
+
+## Current Known Limitation
+
+Decimals are truncated using:
+
+Math.floor()
+
+Examples:
+
+50.23 USD
+→ Fifty dollars
+
+1500000.75 CRC
+→ One million five hundred thousand colones
+
+---
+
+## Active Development
+
+### Branch
+
+feature/decimal-wording
+
+### Goal
+
+Add decimal wording support to the number-to-words display.
+
+Examples:
+
+50.23 USD
+→ Fifty dollars and twenty-three cents
+
+1.01 USD
+→ One dollar and one cent
+
+1500000.75 CRC
+→ One million five hundred thousand colones and seventy-five centimos
+
+1.25 Exchange Rate
+→ One colon per dollar and twenty-five centavos
+
+---
+
+## Planned Architecture
+
+### Enhancements
+
+numberToWords()
+
+- support hyphenated tens
+- twenty-three
+- seventy-five
+
+splitNumberParts(value)
+
+Returns:
+
+{
+  whole,
+  decimal
+}
+
+buildCurrencyPhrase(
+  value,
+  singular,
+  plural,
+  decimalLabel
+)
+
+Handles:
+
+- dollars
+- cents
+- colones
+- centimos
+- exchange rate wording
+
+---
+
+## Future Backlog
+
+### High Priority
+
+- Decimal wording support
+- Singular/plural grammar improvements
+
+### Medium Priority
+
+- English/Spanish localization
+- Additional CRC formatting refinements
+
+### Low Priority
+
+- Calculation history
+- Share/export functionality
