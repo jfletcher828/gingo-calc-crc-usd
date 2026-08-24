@@ -47,13 +47,24 @@ feature/decimal-wording
 
 LATEST STABLE TAG
 
-v1.0
+v1.1
 
 CURRENT STATUS
 
-The feature branch contains approved work for the next release.
+The feature branch contains completed PWA install/offline work pending check-in
+and push for Cloudflare deployment.
 
 Completed in this work:
+
+- Added PWA metadata to index.html, including viewport, theme color, manifest,
+  Apple touch icon, and iOS standalone settings.
+- Added manifest.json with standalone install metadata and icon definitions.
+- Added service-worker.js with versioned app-shell caching.
+- Added PNG app icons under assets/icons.
+- Added README notes for local PWA testing and HTTPS install requirements.
+- Updated PROJECT_STATE.md with PWA architecture and current release context.
+
+Previously completed in v1.1:
 
 - Decimal wording support for USD, CRC, and Exchange Rate number wording.
 - Correct singular/plural labels for dollars, cents, colones, centimos, and colones per dollar.
@@ -68,42 +79,50 @@ Completed in this work:
 VALIDATION COMPLETED
 
 - node --check app.js
+- node --check service-worker.js
+- manifest.json parse check
 - git --no-pager diff --check
+- Localhost smoke test for index.html, manifest.json, service-worker.js, and icon assets
 
 Validation notes:
 
 - JavaScript syntax check passed.
-- Git diff check passed with only LF/CRLF normalization warnings for app.js and styles.css.
-- Manual user review completed; behavior was approved.
+- Service worker syntax check passed.
+- Manifest JSON parsed successfully.
+- Git diff check passed.
+- PWA files returned HTTP 200 from a localhost static server.
+- Browser install, Lighthouse, and phone Add to Home Screen checks are still pending.
 
 FILES CHANGED FOR RELEASE
 
-Expected release commit includes:
+Expected PWA check-in includes:
 
-- app.js
 - index.html
-- styles.css
+- manifest.json
+- service-worker.js
+- assets/icons/icon-192.png
+- assets/icons/icon-512.png
+- assets/icons/apple-touch-icon.png
+- README.md
 - PROJECT_STATE.md
 - docs/COPILOT_PROMPT.md
-- .github/
-- gingo-calc-crc-usd.code-workspace
 
 RELEASE STATUS
 
-Commit, push, and version tag are pending.
+PWA commit and push are pending.
 
-Recommended next release:
+Recommended next action:
 
-- v1.1
+- Commit and push feature/decimal-wording so Cloudflare can deploy.
 
 Reason:
 
-- This is a minor feature release: it adds decimal wording, inverse-rate display, and exchange-rate persistence behavior changes without changing the core calculator architecture.
+- This is an additive PWA feature: it adds installability and offline app-shell
+	caching without changing calculator behavior.
 
 NEXT STEPS
 
-1. Review the final diff.
-2. Stage the approved release files explicitly.
-3. Commit with an imperative message.
-4. Push feature/decimal-wording.
-5. Create and push annotated tag v1.1 if approved.
+1. Stage the approved PWA files explicitly.
+2. Commit with an imperative message.
+3. Push feature/decimal-wording for Cloudflare deployment.
+4. Test the deployed site for installability and offline reload.

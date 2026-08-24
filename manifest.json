@@ -1,0 +1,24 @@
+{
+    "name": "Gringo Calc",
+    "short_name": "Gringo Calc",
+    "description": "CRC, USD, and exchange-rate calculator.",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#f5f7fb",
+    "theme_color": "#1f3b5b",
+    "icons": [
+        {
+            "src": "assets/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "assets/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

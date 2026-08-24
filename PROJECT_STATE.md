@@ -2,11 +2,11 @@
 
 ## Current Version
 
-v1.0
+v1.1
 
 ## Latest Stable Tag
 
-v1.0
+v1.1
 
 ## Current Branch
 
@@ -28,8 +28,12 @@ C:\Users\e041591\source\repos\gingo-calc-crc-usd
 
 ```text
 gingo-calc-crc-usd
+├── assets
+│   └── icons
 ├── app.js
 ├── index.html
+├── manifest.json
+├── service-worker.js
 ├── styles.css
 ├── PROJECT_STATE.md
 └── .git
@@ -166,6 +170,15 @@ Technologies:
   - calculation
   - clear operations
 
+### v1.1
+
+- Decimal wording support for USD, CRC, and Exchange Rate values
+- Correct singular and plural wording for fractional currency labels
+- Hyphenated compound number wording
+- Dynamic inverse-rate label beside the Exchange Rate label
+- Exchange Rate persistence from localStorage
+- Clear button removes the saved exchange-rate value
+
 Examples:
 
 ```text
@@ -219,27 +232,29 @@ to determine which value should be displayed.
 
 ---
 
-## Current Limitation
+## Progressive Web App Support
 
-Decimal values are ignored because:
+Gringo Calc now includes a static PWA shell so it can be installed from a
+supported mobile browser when served from `localhost` or an HTTPS host.
 
-```javascript
-Math.floor()
-```
+PWA files:
 
-is used before conversion.
+- `manifest.json`
+- `service-worker.js`
+- `assets/icons/icon-192.png`
+- `assets/icons/icon-512.png`
+- `assets/icons/apple-touch-icon.png`
 
-Examples:
+The service worker caches the app shell only:
 
-```text
-50.23 USD
-→ Fifty dollars
-```
+- `index.html`
+- `styles.css`
+- `app.js`
+- `manifest.json`
+- icon assets
 
-```text
-1,500,000.75 CRC
-→ One million five hundred thousand colones
-```
+Calculator state remains stored in browser `localStorage`; no persistence
+migration was introduced.
 
 ---
 
@@ -251,74 +266,20 @@ feature/decimal-wording
 
 ### Goal
 
-Add decimal wording support.
+Check in PWA install/offline support for Cloudflare deployment.
 
-Desired behavior:
-
-```text
-50.23 USD
-→ Fifty dollars and twenty-three cents
-```
+Completed PWA behavior:
 
 ```text
-1.01 USD
-→ One dollar and one cent
+Installable from supported mobile browsers when served over HTTPS.
 ```
 
 ```text
-1,500,000.75 CRC
-→ One million five hundred thousand colones and seventy-five centimos
+Offline reload works after the app shell has been cached once.
 ```
 
-```text
-1.25 Exchange Rate
-→ One colon per dollar and twenty-five centavos
-```
-
----
-
-## Planned Architecture
-
-### numberToWords()
-
-Enhance wording:
-
-```text
-twenty-three
-seventy-five
-```
-
-using hyphenated tens.
-
-### splitNumberParts(value)
-
-Returns:
-
-```javascript
-{
-  whole,
-  decimal
-}
-```
-
-### buildCurrencyPhrase()
-
-```javascript
-buildCurrencyPhrase(
-  value,
-  singular,
-  plural,
-  decimalLabel
-)
-```
-
-Responsible for formatting:
-
-- dollars
-- cents
-- colones
-- centimos
-- exchange-rate wording
+Calculator behavior and localStorage persistence were not changed by the PWA
+implementation.
 
 ---
 
@@ -326,8 +287,8 @@ Responsible for formatting:
 
 ### High Priority
 
-- Decimal wording support
-- Improved singular/plural grammar
+- Browser installability test on deployed Cloudflare site
+- Offline reload test on deployed Cloudflare site
 
 ### Medium Priority
 
