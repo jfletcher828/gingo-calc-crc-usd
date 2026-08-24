@@ -55,6 +55,12 @@ label {
     font-weight: 600;
 }
 
+.inverse-rate-label {
+    color: #57606a;
+    font-size: 13px;
+    font-weight: 500;
+}
+
 input {
     width: 100%;
     box-sizing: border-box;

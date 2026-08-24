@@ -1,39 +1,139 @@
 # Gringo Calc Project State
 
 ## Current Version
+
+v1.0
+
+## Latest Stable Tag
+
 v1.0
 
 ## Current Branch
+
 feature/decimal-wording
 
-## Latest Stable Tag
-v1.0
+## Development Environment
 
-## Repository Status
-Feature branch synchronized with remote.
-v1.0 tag created and points to latest commit.
+### Primary IDE
 
-Commit:
-e85ed9b - Add focus-aware number to words display
+Visual Studio Code (VS Code)
+
+All future development should assume VS Code is the primary development environment.
+
+Repository Root:
+
+C:\Users\e041591\source\repos\gingo-calc-crc-usd
+
+### Repository Structure
+
+```text
+gingo-calc-crc-usd
+├── app.js
+├── index.html
+├── styles.css
+├── PROJECT_STATE.md
+└── .git
+```
+
+### Recommended VS Code Extensions
+
+- GitLens
+- GitHub Pull Requests and Issues
+- Live Server
+- Prettier
+
+### Local Testing
+
+Open index.html using Live Server.
+
+Right-click:
+
+```text
+index.html
+```
+
+Select:
+
+```text
+Open with Live Server
+```
+
+### Git Workflow
+
+Start Development Session
+
+```bash
+git checkout feature/decimal-wording
+git pull
+git status
+```
+
+Review Changes
+
+```bash
+git diff
+git status
+```
+
+Commit Changes
+
+```bash
+git add .
+git commit -m "Meaningful commit message"
+```
+
+Push Changes
+
+```bash
+git push origin feature/decimal-wording
+```
+
+### Release Workflow
+
+Create Tag
+
+```bash
+git tag -a vX.Y -m "Release description"
+```
+
+Push Tag
+
+```bash
+git push origin vX.Y
+```
+
+### Project Documentation
+
+PROJECT_STATE.md is the authoritative project handoff document.
+
+Update PROJECT_STATE.md whenever:
+
+- A feature branch is created
+- A major feature is completed
+- A release is tagged
+- Significant architecture changes are introduced
+
+Future Copilot chats should use PROJECT_STATE.md as the primary source of project continuity.
 
 ---
 
 ## Project Overview
 
-Gringo Calc is a single-page web application for converting between:
+Gringo Calc is a single-page web application used to convert between:
 
 - Costa Rican Colones (CRC)
-- US Dollars (USD)
+- United States Dollars (USD)
 - Exchange Rate (CRC per USD)
 
-Current architecture uses:
+Technologies:
 
 - HTML
 - CSS
 - Vanilla JavaScript
-- localStorage persistence
-- Debounced calculations
-- Focus-aware UI behavior
+- localStorage
+- Git
+- GitHub
+- VS Code
 
 ---
 
@@ -59,15 +159,16 @@ Current architecture uses:
 - CRC wording
 - Exchange Rate wording
 - Support for thousands and millions
-- Automatic update on:
+- Capitalized display output
+- Automatic updates during:
   - focus
   - input
   - calculation
-  - clear
-- Capitalized output text
+  - clear operations
 
 Examples:
 
+```text
 100 USD
 → One hundred dollars
 
@@ -76,6 +177,7 @@ Examples:
 
 1.500.000 CRC
 → One million five hundred thousand colones
+```
 
 ---
 
@@ -83,54 +185,61 @@ Examples:
 
 ### Constants
 
+```javascript
 ONES[]
 TENS[]
+```
 
 ### Functions
 
+```javascript
 numberToWords(num)
+```
 
-Converts:
+Supports:
 
-- 0
-- 1-19
-- 20-99
-- 100-999
-- thousands
-- millions
+- Single digits
+- Teens
+- Tens
+- Hundreds
+- Thousands
+- Millions
 
+```javascript
 updateNumberWordsDisplay()
+```
 
 Uses:
 
+```javascript
 focusedField
+```
 
 to determine which value should be displayed.
 
-Current display is whole-number only.
-
-Example:
-
-50.23 USD
-→ Fifty dollars
-
-(decimal portion intentionally ignored)
-
 ---
 
-## Current Known Limitation
+## Current Limitation
 
-Decimals are truncated using:
+Decimal values are ignored because:
 
+```javascript
 Math.floor()
+```
+
+is used before conversion.
 
 Examples:
 
+```text
 50.23 USD
 → Fifty dollars
+```
 
-1500000.75 CRC
+```text
+1,500,000.75 CRC
 → One million five hundred thousand colones
+```
 
 ---
 
@@ -142,57 +251,74 @@ feature/decimal-wording
 
 ### Goal
 
-Add decimal wording support to the number-to-words display.
+Add decimal wording support.
 
-Examples:
+Desired behavior:
 
+```text
 50.23 USD
 → Fifty dollars and twenty-three cents
+```
 
+```text
 1.01 USD
 → One dollar and one cent
+```
 
-1500000.75 CRC
+```text
+1,500,000.75 CRC
 → One million five hundred thousand colones and seventy-five centimos
+```
 
+```text
 1.25 Exchange Rate
 → One colon per dollar and twenty-five centavos
+```
 
 ---
 
 ## Planned Architecture
 
-### Enhancements
+### numberToWords()
 
-numberToWords()
+Enhance wording:
 
-- support hyphenated tens
-- twenty-three
-- seventy-five
+```text
+twenty-three
+seventy-five
+```
 
-splitNumberParts(value)
+using hyphenated tens.
+
+### splitNumberParts(value)
 
 Returns:
 
+```javascript
 {
   whole,
   decimal
 }
+```
 
+### buildCurrencyPhrase()
+
+```javascript
 buildCurrencyPhrase(
   value,
   singular,
   plural,
   decimalLabel
 )
+```
 
-Handles:
+Responsible for formatting:
 
 - dollars
 - cents
 - colones
 - centimos
-- exchange rate wording
+- exchange-rate wording
 
 ---
 
@@ -201,7 +327,7 @@ Handles:
 ### High Priority
 
 - Decimal wording support
-- Singular/plural grammar improvements
+- Improved singular/plural grammar
 
 ### Medium Priority
 
@@ -212,3 +338,21 @@ Handles:
 
 - Calculation history
 - Share/export functionality
+
+---
+
+## Git Milestones
+
+```text
+v0.9
+├─ Three-way calculator
+├─ Debounce model
+├─ CRC formatting
+└─ localStorage persistence
+
+v1.0
+└─ Focus-aware number-to-words display
+
+feature/decimal-wording
+└─ In Progress
+```

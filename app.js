@@ -11,6 +11,7 @@ const savedUSD = localStorage.getItem(USD_STORAGE_KEY);
 const DEBOUNCE_DELAY = 1500; // 1.5 seconds
 const LAST_EDITED_STORAGE_KEY = "gringoCalcLastEditedField";
 const numberWords = document.getElementById("numberWords");
+const inverseRateLabel = document.getElementById("inverseRateLabel");
 
 const ONES = [
     "", "one", "two", "three", "four", "five",
@@ -47,12 +48,13 @@ document.getElementById("clearBtn")
         calculationTimer = null;
         crc.value = "";
         usd.value = "";
-        rate.value = "443";
+        rate.value = "";
         numberWords.textContent = "";
+        updateInverseRateLabel();
         lastEditedField = "crc";
+        localStorage.removeItem(RATE_STORAGE_KEY);
         localStorage.removeItem(CRC_STORAGE_KEY);
         localStorage.removeItem(USD_STORAGE_KEY);
-        localStorage.setItem(RATE_STORAGE_KEY, "443");
     });
 
 function calculate(changedField) {
@@ -88,7 +90,7 @@ function calculate(changedField) {
                     const result = crcVal / rateVal;
 
                     if (Number.isFinite(result) && result > 0) {
-                        usd.value = result.toFixed(2);
+                        usd.value = formatUSD(result);
                         console.log("CALCULATED USD:", result);
                     }
                 }
@@ -138,7 +140,7 @@ function calculate(changedField) {
                     const result = crcVal / rateVal;
 
                     if (Number.isFinite(result) && result > 0) {
-                        usd.value = result.toFixed(2);
+                        usd.value = formatUSD(result);
                         console.log("CALCULATED USD:", result);
                     }
                 }
@@ -150,8 +152,20 @@ function calculate(changedField) {
     } finally {
         isCalculating = false;
         saveValues();
+        updateInverseRateLabel();
         updateNumberWordsDisplay();
     }
+}
+
+function updateInverseRateLabel() {
+    const rateVal = parseFloat(rate.value);
+
+    if (!Number.isFinite(rateVal) || rateVal <= 0) {
+        inverseRateLabel.textContent = "";
+        return;
+    }
+
+    inverseRateLabel.textContent = `(${(1 / rateVal).toFixed(8)})`;
 }
 
 function formatCRC(value) {
@@ -165,6 +179,21 @@ function formatCRC(value) {
     });
 }
 
+function formatUSD(value) {
+    if (!Number.isFinite(value)) {
+        return "";
+    }
+
+    const rounded = value.toFixed(2);
+
+    // Extend precision only when 2 decimals would hide a nonzero amount.
+    if (parseFloat(rounded) === 0 && value > 0) {
+        return value.toFixed(6).replace(/0+$/, "").replace(/\.$/, ".0");
+    }
+
+    return rounded;
+}
+
 function parseCRC(text) {
     console.log("parseCRC input:", text);
     console.log("parseCRC type:", typeof text);
@@ -174,9 +203,48 @@ function parseCRC(text) {
         return NaN;
     }
 
-    const cleaned = String(text)
-        .replace(/\./g, "")
-        .replace(",", ".");
+    const normalized = String(text).trim().replace(/\s+/g, "");
+
+    if (!normalized) {
+        console.log("parseCRC: empty normalized input");
+        return NaN;
+    }
+
+    let cleaned = normalized;
+
+    if (normalized.includes(",") && normalized.includes(".")) {
+        const lastComma = normalized.lastIndexOf(",");
+        const lastDot = normalized.lastIndexOf(".");
+
+        if (lastComma > lastDot) {
+            cleaned = normalized.replace(/\./g, "").replace(",", ".");
+        } else {
+            cleaned = normalized.replace(/,/g, "");
+        }
+    } else if (normalized.includes(",")) {
+        const commaIndex = normalized.lastIndexOf(",");
+        const decimalPart = normalized.slice(commaIndex + 1);
+
+        if (decimalPart.length <= 2) {
+            const integerPart = normalized.slice(0, commaIndex).replace(/\./g, "");
+            cleaned = integerPart + "." + decimalPart;
+        } else {
+            cleaned = normalized.replace(/,/g, "");
+        }
+    } else if (normalized.includes(".")) {
+        const lastDot = normalized.lastIndexOf(".");
+        const lastPart = normalized.slice(lastDot + 1);
+
+        // A 3-digit group after the final dot is a thousands separator,
+        // not a decimal (CRC formatting never has 3-digit cents).
+        if (lastPart.length === 3) {
+            cleaned = normalized.replace(/\./g, "");
+        } else if (lastPart.length === 1 || lastPart.length === 2) {
+            cleaned = normalized.slice(0, lastDot).replace(/\./g, "") + "." + lastPart;
+        } else {
+            cleaned = normalized.replace(/\./g, "");
+        }
+    }
 
     console.log("parseCRC cleaned:", cleaned);
 
@@ -200,8 +268,10 @@ function numberToWords(num) {
         }
 
         if (n < 100) {
-            return TENS[Math.floor(n / 10)] +
-                (n % 10 ? " " + ONES[n % 10] : "");
+            const tensPart = TENS[Math.floor(n / 10)];
+            const onesPart = n % 10;
+
+            return tensPart + (onesPart ? "-" + ONES[onesPart] : "");
         }
 
         if (n < 1000) {
@@ -224,24 +294,78 @@ function numberToWords(num) {
     return convert(num);
 }
 
+function getWholeAndFractionalParts(value) {
+    const absoluteValue = Math.abs(value);
+    const whole = Math.floor(absoluteValue);
+    const fractional = Math.round((absoluteValue - whole) * 100);
+
+    if (fractional === 100) {
+        return {
+            whole: whole + 1,
+            fractional: 0
+        };
+    }
+
+    return {
+        whole,
+        fractional
+    };
+}
+
+function formatNumberWithCurrency(value, field) {
+    if (!Number.isFinite(value) || value <= 0) {
+        return "";
+    }
+
+    const { whole, fractional } = getWholeAndFractionalParts(value);
+
+    let wholeLabel = "";
+    let fractionalLabel = "";
+
+    switch (field) {
+        case "crc":
+            wholeLabel = whole === 1 ? " colon" : " colones";
+            fractionalLabel = fractional === 1 ? " centimo" : " centimos";
+            break;
+
+        case "usd":
+            wholeLabel = whole === 1 ? " dollar" : " dollars";
+            fractionalLabel = fractional === 1 ? " cent" : " cents";
+            break;
+
+        case "rate":
+            wholeLabel = whole === 1 ? " colon per dollar" : " colones per dollar";
+            fractionalLabel = fractional === 1 ? " centavo" : " centavos";
+            break;
+
+        default:
+            return numberToWords(whole);
+    }
+
+    const text = numberToWords(whole) + wholeLabel +
+        (fractional > 0 ? " and " + numberToWords(fractional) + fractionalLabel : "");
+
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 function updateNumberWordsDisplay() {
     let value;
-    let suffix;
+    let fieldName;
 
     switch (focusedField) {
         case "crc":
             value = parseCRC(crc.value);
-            suffix = " colones";
+            fieldName = "crc";
             break;
 
         case "usd":
             value = parseFloat(usd.value);
-            suffix = " dollars";
+            fieldName = "usd";
             break;
 
         case "rate":
             value = parseFloat(rate.value);
-            suffix = " colones per dollar";
+            fieldName = "rate";
             break;
 
         default:
@@ -249,15 +373,8 @@ function updateNumberWordsDisplay() {
             return;
     }
 
-    if (!Number.isFinite(value) || value <= 0) {
-        numberWords.textContent = "";
-        return;
-    }
-
-    const text = numberToWords(value) + suffix;
-    
-    numberWords.textContent =
-        text.charAt(0).toUpperCase() + text.slice(1);
+    const text = formatNumberWithCurrency(value, fieldName);
+    numberWords.textContent = text;
 }
 
 function saveValues() {
@@ -320,6 +437,7 @@ rate.addEventListener("input", () => {
      * The most recently edited monetary field remains authoritative.
      */
     saveValues();
+    updateInverseRateLabel();
     updateNumberWordsDisplay();
     scheduleCalculation("rate");
 });
@@ -349,3 +467,5 @@ usd.addEventListener("blur", () => {
     lastEditedField = "usd";
     calculate("usd");
 });
+
+updateInverseRateLabel();
