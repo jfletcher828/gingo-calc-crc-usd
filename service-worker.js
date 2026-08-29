@@ -1,13 +1,13 @@
-const CACHE_NAME = "gringo-calc-pwa-v1";
+const CACHE_NAME = "gringo-calc-pwa-v2";
 const APP_SHELL_ASSETS = [
     "./",
     "./index.html",
     "./styles.css",
     "./app.js",
     "./manifest.json",
-    "./assets/icons/icon-192.png",
-    "./assets/icons/icon-512.png",
-    "./assets/icons/apple-touch-icon.png"
+    "./icon.svg",
+    "./icon-192.svg",
+    "./icon-512.svg"
 ];
 
 self.addEventListener("install", (event) => {
