@@ -14,16 +14,15 @@ const numberWords = document.getElementById("numberWords");
 const inverseRateLabel = document.getElementById("inverseRateLabel");
 
 const ONES = [
-    "", "one", "two", "three", "four", "five",
-    "six", "seven", "eight", "nine", "ten",
-    "eleven", "twelve", "thirteen", "fourteen",
-    "fifteen", "sixteen", "seventeen",
-    "eighteen", "nineteen"
+    "", "uno", "dos", "tres", "cuatro", "cinco",
+    "seis", "siete", "ocho", "nueve", "diez",
+    "once", "doce", "trece", "catorce", "quince",
+    "dieciséis", "diecisiete", "dieciocho", "diecinueve"
 ];
 
 const TENS = [
-    "", "", "twenty", "thirty", "forty",
-    "fifty", "sixty", "seventy", "eighty", "ninety"
+    "", "", "veinte", "treinta", "cuarenta",
+    "cincuenta", "sesenta", "setenta", "ochenta", "noventa"
 ];
 
 let focusedField = "crc";
@@ -259,7 +258,7 @@ function numberToWords(num) {
     num = Math.floor(num);
 
     if (num === 0) {
-        return "zero";
+        return "cero";
     }
 
     function convert(n) {
@@ -268,30 +267,61 @@ function numberToWords(num) {
         }
 
         if (n < 100) {
+            if (n < 30) {
+                const specialTwenties = {
+                    2: "veintidós",
+                    3: "veintitrés",
+                    6: "veintiséis"
+                };
+
+                return specialTwenties[n - 20] || "veinti" + ONES[n - 20];
+            }
+
             const tensPart = TENS[Math.floor(n / 10)];
             const onesPart = n % 10;
 
-            return tensPart + (onesPart ? "-" + ONES[onesPart] : "");
+            return tensPart + (onesPart ? " y " + ONES[onesPart] : "");
         }
 
         if (n < 1000) {
-            return ONES[Math.floor(n / 100)] +
-                " hundred" +
+            const hundreds = Math.floor(n / 100);
+            const hundredsWord = hundreds === 1 ? "cien" :
+                ["", "", "doscientos", "trescientos", "cuatrocientos",
+                    "quinientos", "seiscientos", "setecientos", "ochocientos",
+                    "novecientos"][hundreds];
+
+            return (hundreds === 1 && n > 100 ? "ciento" : hundredsWord) +
                 (n % 100 ? " " + convert(n % 100) : "");
         }
 
         if (n < 1000000) {
-            return convert(Math.floor(n / 1000)) +
-                " thousand" +
+            const thousands = Math.floor(n / 1000);
+            const thousandsWord = thousands === 1 ? "mil" :
+                convert(thousands) + " mil";
+
+            return thousandsWord +
                 (n % 1000 ? " " + convert(n % 1000) : "");
         }
 
-        return convert(Math.floor(n / 1000000)) +
-            " million" +
+        const millions = Math.floor(n / 1000000);
+        const millionsWord = millions === 1 ? "un millón" :
+            convert(millions) + " millones";
+
+        return millionsWord +
             (n % 1000000 ? " " + convert(n % 1000000) : "");
     }
 
     return convert(num);
+}
+
+function numberToCurrencyWords(num) {
+    const words = numberToWords(num);
+
+    if (words.endsWith("veintiuno")) {
+        return words.slice(0, -"veintiuno".length) + "veintiún";
+    }
+
+    return words.endsWith("uno") ? words.slice(0, -3) + "un" : words;
 }
 
 function getWholeAndFractionalParts(value) {
@@ -324,17 +354,17 @@ function formatNumberWithCurrency(value, field) {
 
     switch (field) {
         case "crc":
-            wholeLabel = whole === 1 ? " colon" : " colones";
-            fractionalLabel = fractional === 1 ? " centimo" : " centimos";
+            wholeLabel = whole === 1 ? " colón" : " colones";
+            fractionalLabel = fractional === 1 ? " céntimo" : " céntimos";
             break;
 
         case "usd":
-            wholeLabel = whole === 1 ? " dollar" : " dollars";
-            fractionalLabel = fractional === 1 ? " cent" : " cents";
+            wholeLabel = whole === 1 ? " dólar" : " dólares";
+            fractionalLabel = fractional === 1 ? " centavo" : " centavos";
             break;
 
         case "rate":
-            wholeLabel = whole === 1 ? " colon per dollar" : " colones per dollar";
+            wholeLabel = whole === 1 ? " colón por dólar" : " colones por dólar";
             fractionalLabel = fractional === 1 ? " centavo" : " centavos";
             break;
 
@@ -342,8 +372,8 @@ function formatNumberWithCurrency(value, field) {
             return numberToWords(whole);
     }
 
-    const text = numberToWords(whole) + wholeLabel +
-        (fractional > 0 ? " and " + numberToWords(fractional) + fractionalLabel : "");
+    const text = numberToCurrencyWords(whole) + wholeLabel +
+        (fractional > 0 ? " con " + numberToCurrencyWords(fractional) + fractionalLabel : "");
 
     return text.charAt(0).toUpperCase() + text.slice(1);
 }

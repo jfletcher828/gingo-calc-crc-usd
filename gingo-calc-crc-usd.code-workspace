@@ -4,5 +4,12 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"chat.tools.terminal.autoApprove": {
+			"/^node --check app\\.js$/": {
+				"approve": true,
+				"matchCommandLine": true
+			}
+		}
+	}
 }

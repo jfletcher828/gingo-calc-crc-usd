@@ -2,18 +2,18 @@
 
 ## USD focus
 
-- 100 USD produces One hundred dollars.
-- 50.23 USD produces Fifty dollars and twenty-three cents.
-- 1.01 USD produces One dollar and one cent.
+- 100 USD produces Cien dólares.
+- 50.23 USD produces Cincuenta dólares con veintitrés centavos.
+- 1.01 USD produces Un dólar con un centavo.
 
 ## Exchange-rate focus
 
-- 443 produces Four hundred forty-three colones per dollar.
+- 443 produces Cuatrocientos cuarenta y tres colones por dólar.
 - A decimal rate preserves the calculator's configured precision.
 
 ## CRC focus
 
-- 1.500.000 produces One million five hundred thousand colones.
+- 1.500.000 produces Un millón quinientos mil colones.
 - A CRC decimal retains Costa Rican input and display conventions.
 
 ## Calculator behavior
