@@ -51,8 +51,8 @@ v1.1
 
 CURRENT STATUS
 
-The feature branch contains completed PWA install/offline work pending check-in
-and push for Cloudflare deployment.
+The PWA install/offline work is checked in. The current pending change updates
+the header eyebrow from "Currency Studio" to "Gringo Studios".
 
 Completed in this work:
 
@@ -109,11 +109,11 @@ Expected PWA check-in includes:
 
 RELEASE STATUS
 
-PWA commit and push are pending.
+The current branding change is pending check-in.
 
 Recommended next action:
 
-- Commit and push feature/decimal-wording so Cloudflare can deploy.
+- Check in the branding change, then push feature/decimal-wording when ready.
 
 Reason:
 
@@ -122,7 +122,7 @@ Reason:
 
 NEXT STEPS
 
-1. Stage the approved PWA files explicitly.
+1. Stage index.html and docs/COPILOT_PROMPT.md explicitly.
 2. Commit with an imperative message.
 3. Push feature/decimal-wording for Cloudflare deployment.
 4. Test the deployed site for installability and offline reload.
