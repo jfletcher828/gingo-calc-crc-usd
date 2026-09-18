@@ -1,0 +1,128 @@
+Continue development of the Gringo Calc project.
+
+IMPORTANT WORKING RULES
+
+- Review PROJECT_STATE.md before proposing any changes.
+- Review the current code in app.js, index.html, and styles.css before making recommendations.
+- Do not assume code structure from previous chats. Use the actual files in the workspace.
+- Preserve all existing functionality.
+- Use a cautious software-engineering approach.
+- Provide no more than THREE implementation steps at a time.
+- Pause after each set of steps and wait for testing results before continuing.
+- When reviewing code, look for regressions and side effects.
+- Explain why proposed changes are needed.
+- Favor small incremental changes over large refactors.
+
+PROJECT
+
+Gringo Calc is a single-page web application that converts between:
+
+- CRC (Costa Rican Colones)
+- USD (United States Dollars)
+- Exchange Rate (CRC per USD)
+
+TECHNOLOGY STACK
+
+- HTML
+- CSS
+- Vanilla JavaScript
+- localStorage persistence
+- Git
+- GitHub
+- Visual Studio Code
+
+CURRENT DEVELOPMENT ENVIRONMENT
+
+Repository Root:
+
+C:\Users\e041591\source\repos\gingo-calc-crc-usd
+
+Primary IDE:
+
+Visual Studio Code
+
+CURRENT BRANCH
+
+feature/decimal-wording
+
+LATEST STABLE TAG
+
+v1.1
+
+CURRENT STATUS
+
+The PWA install/offline work is checked in. The current pending change updates
+the header eyebrow from "Currency Studio" to "Gringo Studios".
+
+Completed in this work:
+
+- Added PWA metadata to index.html, including viewport, theme color, manifest,
+  Apple touch icon, and iOS standalone settings.
+- Added manifest.json with standalone install metadata and icon definitions.
+- Added service-worker.js with versioned app-shell caching.
+- Added PNG app icons under assets/icons.
+- Added README notes for local PWA testing and HTTPS install requirements.
+- Updated PROJECT_STATE.md with PWA architecture and current release context.
+
+Previously completed in v1.1:
+
+- Decimal wording support for USD, CRC, and Exchange Rate number wording.
+- Correct singular/plural labels for dollars, cents, colones, centimos, and colones per dollar.
+- Hyphenated compound number wording such as twenty-three and seventy-five.
+- Dynamic inverse-rate label beside the Exchange Rate label.
+- Inverse-rate label displays only the calculated value in parentheses, limited to 8 decimal places.
+- Removed the hard-coded default Exchange Rate value of 443.
+- Exchange Rate now recalls the last saved value from localStorage on load, matching CRC and USD behavior.
+- Clear now blanks Exchange Rate and removes the saved exchange-rate value.
+- Project support files and repo guidance were added under .github, docs, and the VS Code workspace file.
+
+VALIDATION COMPLETED
+
+- node --check app.js
+- node --check service-worker.js
+- manifest.json parse check
+- git --no-pager diff --check
+- Localhost smoke test for index.html, manifest.json, service-worker.js, and icon assets
+
+Validation notes:
+
+- JavaScript syntax check passed.
+- Service worker syntax check passed.
+- Manifest JSON parsed successfully.
+- Git diff check passed.
+- PWA files returned HTTP 200 from a localhost static server.
+- Browser install, Lighthouse, and phone Add to Home Screen checks are still pending.
+
+FILES CHANGED FOR RELEASE
+
+Expected PWA check-in includes:
+
+- index.html
+- manifest.json
+- service-worker.js
+- assets/icons/icon-192.png
+- assets/icons/icon-512.png
+- assets/icons/apple-touch-icon.png
+- README.md
+- PROJECT_STATE.md
+- docs/COPILOT_PROMPT.md
+
+RELEASE STATUS
+
+The current branding change is pending check-in.
+
+Recommended next action:
+
+- Check in the branding change, then push feature/decimal-wording when ready.
+
+Reason:
+
+- This is an additive PWA feature: it adds installability and offline app-shell
+	caching without changing calculator behavior.
+
+NEXT STEPS
+
+1. Stage index.html and docs/COPILOT_PROMPT.md explicitly.
+2. Commit with an imperative message.
+3. Push feature/decimal-wording for Cloudflare deployment.
+4. Test the deployed site for installability and offline reload.
